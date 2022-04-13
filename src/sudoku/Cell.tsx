@@ -27,10 +27,10 @@ const CellStyle = styled.div<CellStyleProps>`
         padding:${({theme}) => theme.fontSize.sm + theme.fontSize.sm};
         font-size: 1.7rem;
         cursor: pointer;
-        border-bottom: ${breakRow ? '3px solid ' + colors.dark : 'inhite'};
+        margin-bottom: ${breakRow ? '4px' : 'inherit'};
 
         :nth-child(3n){
-            border-right: 3px solid ${colors.dark};
+            border-right: 4px solid ${colors.dark};
         }
         `;
     }}
@@ -51,14 +51,14 @@ const InputStyle = styled.input<CellStyleProps>`
         font-weight: bold;
         cursor: pointer;
         caret-color: transparent;
-        border-bottom: ${breakRow ? '3px solid ' + colors.dark : 'inhite'};
+        margin-bottom: ${breakRow ? '4px' : 'inherit'};
 
         &:focus-visible {
             outline: unset;
         }
 
         :nth-child(3n){
-            border-right: 3px solid ${colors.dark};
+            border-right: 4px solid ${colors.dark};
         }
         `;
     }}

@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import styled, {css} from 'styled-components'
 import Cell from "./Cell";
 import { isGameOver, GameStatus, isGameFinished, Mode, Cell_Size, Numbers, LevelName, Error_Count } from "../utils/game";
-import {FaPen, FaTrash} from 'react-icons/fa';
+import {FaPen, FaTrash, FaUndoAlt, FaInfo} from 'react-icons/fa';
 import Timer from "../components/Timer";
 
 const SudokuStyle = styled.section`
@@ -76,7 +76,39 @@ const NumberStyle = styled.button`
 const NotiStyle = styled.div`
     ${({theme: {colors}}) => {
         return css`
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
+        position: relative;
+        width: 50px;
+        height: 50px;
+        border: .5px solid ${colors.dark};
+        border-radius: 50%;
+        background-color: ${colors.light};
+        color: ${colors.dark};
+
+        &:hover {
+            background-color: ${colors.light_dark};
+        }
+
+        span {
+            position: absolute;
+            bottom: -18px;
+            color: ${colors.light};
+            font-size: .8rem;
+
+            &.mode{
+                bottom: unset;
+                top: -8px;
+                right: 0;
+                border: 1px solid ${colors.light};
+                border-radius: 6px;
+                padding: 2px 5px;
+                background-color: ${colors.dark};
+                color: ${colors.light};
+            }
+        }
         `;
     }}
 `;
@@ -85,6 +117,7 @@ const Header = styled.header`
     ${({theme: {colors}}) => {
         return css`
         margin: 1rem auto;
+        padding: .5rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -140,7 +173,6 @@ class Sudoku extends Component {
 
         const startingBoardMap = {};
         const [removedVals, startingBoard] = this.pokeHoles(this.fillPuzzle(emptyBoard), this.props.game.level);
-        console.log({removedVals, startingBoard})
 
         startingBoard.forEach((row, rowIndex) => {
             row.forEach((value, colIndex) => {
@@ -399,6 +431,25 @@ class Sudoku extends Component {
         this.insert({colIndex: active.colIndex, rowIndex: active.rowIndex, value: e.currentTarget.value})
     }
 
+    remove = () => {
+        const active = Object.values(this.state.startingBoardMap).find(item => item.active && !item.disabled);
+        if (!active){
+            return;
+        }
+        if(this.props.game.status === GameStatus.started){
+            const startingBoardMap = {...this.state.startingBoardMap};
+            const key = 'row' + active.rowIndex + '_col' + active.colIndex;
+
+            if(this.props.game.mode === Mode.notice){
+                console.log({startingBoardMap})
+            } else {
+                startingBoardMap[key].inputValue = '';
+                startingBoardMap[key].error = false;
+            }
+            this.setState({startingBoardMap})
+        }
+    }
+
     toggleMode = () => {
         const game = {...this.props.game};
         const mode = game.mode === Mode.notice ? Mode.write : Mode.notice
@@ -412,7 +463,7 @@ class Sudoku extends Component {
     };
 
     render() {
-        const {insert, updateStartingBoardMap, isBreakRow, insertByButton, toggleMode, togglePausePlayGame, state} = this;
+        const {insert, remove, updateStartingBoardMap, isBreakRow, insertByButton, toggleMode, togglePausePlayGame, state} = this;
         const {startingBoardMap} = state;
         const {game} = this.props;
         const startingBoardList = Object.keys(startingBoardMap);
@@ -432,8 +483,23 @@ class Sudoku extends Component {
             </Main>
             <Aside>
                 <Header>
-                    <NotiStyle onClick={toggleMode} ><FaPen /></NotiStyle>
-                    <NotiStyle ><FaTrash /></NotiStyle>
+                    <NotiStyle >
+                        <FaUndoAlt />
+                        <span>Undo</span>
+                    </NotiStyle>
+                    <NotiStyle onClick={remove} >
+                        <FaTrash />
+                        <span>Erase</span>
+                    </NotiStyle>
+                    <NotiStyle onClick={toggleMode} >
+                        <FaPen />
+                        <span className="mode">{game.mode === Mode.notice ? 'On' : 'Off'}</span>
+                        <span>Notes</span>
+                    </NotiStyle>
+                    <NotiStyle >
+                        <FaInfo />
+                        <span>Hint</span>
+                    </NotiStyle>
                 </Header>
                 {Numbers.map((item, key) => <NumberStyle key={key} value={item} onClick={insertByButton}>{item}</NumberStyle>)}
             </Aside>

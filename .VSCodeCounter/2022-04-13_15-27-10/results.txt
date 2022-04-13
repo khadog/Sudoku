@@ -1,0 +1,57 @@
+Date : 2022-04-13 15:27:10
+Directory : /Users/abdkha/Desktop/Lernen/sudoku/src
+Total : 25 files,  1001 codes, 50 comments, 182 blanks, all 1233 lines
+
+Languages
++------------------+------------+------------+------------+------------+------------+
+| language         | files      | code       | comment    | blank      | total      |
++------------------+------------+------------+------------+------------+------------+
+| JavaScript       |          2 |        375 |         41 |         66 |        482 |
+| TypeScript React |         10 |        374 |          3 |         74 |        451 |
+| TypeScript       |         11 |        207 |          6 |         34 |        247 |
+| CSS              |          2 |         45 |          0 |          8 |         53 |
++------------------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                          | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                             |         25 |      1,001 |         50 |        182 |      1,233 |
+| components                                                                    |          6 |        220 |          0 |         44 |        264 |
+| components/Game                                                               |          2 |         78 |          0 |         15 |         93 |
+| sudoku                                                                        |          2 |        440 |         39 |         76 |        555 |
+| theme                                                                         |          6 |        123 |          2 |         16 |        141 |
+| utils                                                                         |          3 |        100 |          1 |         19 |        120 |
++-------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| filename                                                                      | language         | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| /Users/abdkha/Desktop/Lernen/sudoku/src/App.css                               | CSS              |         33 |          0 |          6 |         39 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/App.test.tsx                          | TypeScript React |          8 |          0 |          2 |         10 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/App.tsx                               | TypeScript React |         41 |          0 |          8 |         49 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/components/Button.tsx                 | TypeScript React |         24 |          0 |          4 |         28 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/components/Game/GameProgress.tsx      | TypeScript React |         25 |          0 |          6 |         31 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/components/Game/GameStatusMessage.tsx | TypeScript React |         53 |          0 |          9 |         62 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/components/Header.tsx                 | TypeScript React |         39 |          0 |          7 |         46 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/components/Main.tsx                   | TypeScript React |         39 |          0 |         10 |         49 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/components/Timer.tsx                  | TypeScript React |         40 |          0 |          8 |         48 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/index.css                             | CSS              |         12 |          0 |          2 |         14 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/index.tsx                             | TypeScript React |         10 |          3 |          4 |         17 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/react-app-env.d.ts                    | TypeScript       |          0 |          1 |          1 |          2 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/reportWebVitals.ts                    | TypeScript       |         13 |          0 |          3 |         16 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/setupTests.ts                         | TypeScript       |          1 |          4 |          1 |          6 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/sudoku/Cell.tsx                       | TypeScript React |         95 |          0 |         16 |        111 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/sudoku/Sudoku.js                      | JavaScript       |        345 |         39 |         60 |        444 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/theme/GlobalStyles.js                 | JavaScript       |         30 |          2 |          6 |         38 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/theme/dark.ts                         | TypeScript       |         26 |          0 |          2 |         28 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/theme/index.ts                        | TypeScript       |          6 |          0 |          1 |          7 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/theme/light.ts                        | TypeScript       |         26 |          0 |          2 |         28 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/theme/types.ts                        | TypeScript       |         17 |          0 |          1 |         18 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/theme/useTheme.ts                     | TypeScript       |         18 |          0 |          4 |         22 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/utils/date.ts                         | TypeScript       |          9 |          1 |          2 |         12 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/utils/game.ts                         | TypeScript       |         81 |          0 |         14 |         95 |
+| /Users/abdkha/Desktop/Lernen/sudoku/src/utils/storage.ts                      | TypeScript       |         10 |          0 |          3 |         13 |
+| Total                                                                         |                  |      1,001 |         50 |        182 |      1,233 |
++-------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+
