@@ -1,7 +1,9 @@
 import React, {Component} from "react";
 import styled, {css} from 'styled-components'
 import Cell from "./Cell";
-import { Cell_Size, isGameOver, GameStatus, isGameFinished } from "../utils/game";
+import { isGameOver, GameStatus, isGameFinished, Mode, Cell_Size, Numbers, LevelName, Error_Count } from "../utils/game";
+import {FaPen, FaTrash} from 'react-icons/fa';
+import Timer from "../components/Timer";
 
 const SudokuStyle = styled.section`
     ${({theme: {colors}, active}) => {
@@ -9,14 +11,98 @@ const SudokuStyle = styled.section`
         display: flex;
         align-items: center;
         flex-wrap: wrap;
-        width: calc(9 * ${Cell_Size});
         color: ${colors.light};
         background-color: ${colors.dark};
-        margin: auto;
         filter: blur(${active ? '0px' : '5px'});
         `;
     }}
 `;
+
+const Container = styled.section`
+    ${({theme: {colors}}) => {
+        return css`
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 1rem;
+        color: ${colors.light};
+        `;
+    }}
+`;
+
+const Main = styled.main`
+    ${() => {
+        return css`
+        width: calc(9 * ${Cell_Size});
+        `;
+    }}
+`;
+
+const Aside = styled.aside`
+    ${({theme: {colors}}) => {
+        return css`
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-left: 5rem;
+        width: calc(6 * ${Cell_Size});
+        `;
+    }}
+`;
+
+const NumberStyle = styled.button`
+    ${({theme: {colors}}) => {
+        return css`
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all .15s;
+        text-align: center;
+        width: calc(2 * ${Cell_Size});
+        height: calc(2 * ${Cell_Size});
+        border: .5px solid ${colors.dark};
+        border-radius: unset;
+        background-color: ${colors.light};
+        color: ${colors.dark};
+        font-size: 3rem;
+
+        &:hover {
+            background-color: ${colors.light_dark};
+        }
+        `;
+    }}
+`;
+
+const NotiStyle = styled.div`
+    ${({theme: {colors}}) => {
+        return css`
+        cursor: pointer;
+        `;
+    }}
+`;
+
+const Header = styled.header`
+    ${({theme: {colors}}) => {
+        return css`
+        margin: 1rem auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        `;
+    }}
+`;
+
+const NavItem = styled.span`
+    width: 33%;
+    &:first-child {
+        text-align: left;
+    }
+    &:last-child {
+        text-align: right;
+    }
+`;
+
 
 let counter = 0;
 let pokeCounter = 0;
@@ -67,7 +153,8 @@ class Sudoku extends Component {
                     disabled: value !== 0,
                     error: false,
                     selected: false,
-                    hovered: false
+                    hovered: false,
+                    active: false
                 }
             })
         })
@@ -273,18 +360,23 @@ class Sudoku extends Component {
         if(game.status === GameStatus.started){
             const startingBoardMap = {...this.state.startingBoardMap};
             const key = 'row' + rowIndex + '_col' + colIndex;
-            const error = value !== '' && +value !== startingBoardMap[key].value;
 
-            startingBoardMap[key].inputValue = value;
-            startingBoardMap[key].error = error;
-            
-            if (error) {
-                const status = isGameOver(game) ? GameStatus.failed : game.status;
-                this.props.setGame({...game, errors: ++game.errors, status}) 
+            if(game.mode === Mode.notice){
+                console.log({startingBoardMap, value})
             } else {
-                const finished = isGameFinished(startingBoardMap)
-                if (finished) {
-                    this.props.setGame({...game, status: GameStatus.success})
+                const error = value !== '' && +value !== startingBoardMap[key].value;
+
+                startingBoardMap[key].inputValue = value;
+                startingBoardMap[key].error = error;
+                
+                if (error) {
+                    const status = isGameOver(game) ? GameStatus.failed : game.status;
+                    this.props.setGame({...game, errors: ++game.errors, status}) 
+                } else {
+                    const finished = isGameFinished(startingBoardMap)
+                    if (finished) {
+                        this.props.setGame({...game, status: GameStatus.success})
+                    }
                 }
             }
             this.setState({startingBoardMap})
@@ -299,17 +391,53 @@ class Sudoku extends Component {
         return (index > 17 && index < 27) || (index > 44 && index < 54)
     };
 
+    insertByButton = (e) => {
+        const active = Object.values(this.state.startingBoardMap).find(item => item.active && !item.disabled);
+        if (!active){
+            return;
+        }
+        this.insert({colIndex: active.colIndex, rowIndex: active.rowIndex, value: e.currentTarget.value})
+    }
+
+    toggleMode = () => {
+        const game = {...this.props.game};
+        const mode = game.mode === Mode.notice ? Mode.write : Mode.notice
+        this.props.setGame({...game, mode})
+    };
+
+    togglePausePlayGame = () => {
+        const game = {...this.props.game};
+        const status = game.status === GameStatus.started ? GameStatus.paused : GameStatus.started
+        this.props.setGame({...game, status})
+    };
+
     render() {
-        const {insert, updateStartingBoardMap, isBreakRow, state} = this;
+        const {insert, updateStartingBoardMap, isBreakRow, insertByButton, toggleMode, togglePausePlayGame, state} = this;
         const {startingBoardMap} = state;
         const {game} = this.props;
         const startingBoardList = Object.keys(startingBoardMap);
 
-        return <SudokuStyle active={game.status !== GameStatus.paused}>
-            {startingBoardList.map((key, index) => {
-            return <Cell key={key} selectedCell={startingBoardMap[key]} startingBoardMap={startingBoardMap} breakRow={isBreakRow(index)} insert={insert} updateStartingBoardMap={updateStartingBoardMap} game={game} />
-            })}
-        </SudokuStyle>;
+        return <Container>
+            <Main>
+                <Header>
+                    <NavItem>{LevelName[game.level]}</NavItem>
+                    <Timer status={game.status} togglePausePlayGame={togglePausePlayGame}/>
+                    <NavItem>Errors: {game.errors} / {Error_Count}</NavItem>
+                </Header>
+                <SudokuStyle active={game.status !== GameStatus.paused}>
+                    {startingBoardList.map((key, index) => {
+                    return <Cell key={key} selectedCell={startingBoardMap[key]} startingBoardMap={startingBoardMap} breakRow={isBreakRow(index)} insert={insert} updateStartingBoardMap={updateStartingBoardMap} game={game} />
+                    })}
+                </SudokuStyle>
+            </Main>
+            <Aside>
+                <Header>
+                    <NotiStyle onClick={toggleMode} ><FaPen /></NotiStyle>
+                    <NotiStyle ><FaTrash /></NotiStyle>
+                </Header>
+                {Numbers.map((item, key) => <NumberStyle key={key} value={item} onClick={insertByButton}>{item}</NumberStyle>)}
+            </Aside>
+        </Container>;
     }
 }
 

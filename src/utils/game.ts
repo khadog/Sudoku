@@ -1,5 +1,6 @@
 const Error_Count = 3;
 const Cell_Size = '70px';
+const Numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const inSelectBoxRange = (selected: CellType, colIndex: number, rowIndex: number): boolean  => {
     const startCol = colIndex - (colIndex % 3);
@@ -43,9 +44,14 @@ enum Level {
     ease = "20",
     normal = "30",
     hard = "45",
-    expert = "55"
+    expert = "60"
 }
-  
+
+enum Mode {
+    notice = "notice",
+    write = "write"
+}
+
 const LevelName = {
     [Level.none]: "Unknown",
     [Level.ease]: "Easy",
@@ -66,15 +72,18 @@ export type CellType = {
 
 
 export type GameType = {
-    status: GameStatus;
-    errors: number,
-    level: Level;
+    status: GameStatus
+    errors: number
+    level: Level
+    mode: Mode
 }
 
 export {
     Error_Count,
     Cell_Size,
     LevelName,
+    Numbers,
+    Mode,
     GameStatus,
     Level,
     isGameOver,

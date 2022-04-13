@@ -1,6 +1,5 @@
 import React, {ButtonHTMLAttributes, FC} from 'react';
-
-import styled, { useTheme, css } from 'styled-components'
+import styled, { css } from 'styled-components'
 
 const ButtonStyle = styled.button<ButtonProps>`
 
@@ -9,6 +8,7 @@ ${({theme: {colors}}) => {
         color: ${colors.light};
         background-color: ${colors.dark};
         border: 1px solid ${colors.light};
+        margin: ${({theme}) => theme.fontSize.md};
         &:hover, &.active {
             outline: unset;
             background-color: ${colors.light};
@@ -22,8 +22,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const Button:FC<ButtonProps> = ({children, ...res}) => {
-    const theme = useTheme()
-    return <ButtonStyle theme={theme} {...res}>{children}</ButtonStyle>
+    return <ButtonStyle {...res}>{children}</ButtonStyle>
 }
 
 export default Button;

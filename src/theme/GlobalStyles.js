@@ -30,7 +30,6 @@ export const GlobalStyles = createGlobalStyle`
     align-items: center;
     cursor: pointer;
     border-radius: 4px;
-    margin: ${({theme}) => theme.fontSize.md};
     padding:${({theme}) => theme.fontSize.xs + theme.fontSize.sm}; 
     font-size: ${({theme}) => theme.fontSize.md};
     font-family: ${({ theme }) => theme.font};

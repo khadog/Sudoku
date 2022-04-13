@@ -91,6 +91,7 @@ const Cell:FC<CellProps> = ({selectedCell, startingBoardMap, insert, updateStart
         Object.keys(startingBoardMap).forEach((key) => {
             startingBoardMap[key].hovered = inSelectRowRange(startingBoardMap[key], rowIndex) || inSelectColRange(startingBoardMap[key], colIndex) || inSelectBoxRange(startingBoardMap[key], colIndex, rowIndex);
             startingBoardMap[key].selected = (key === selectedKey) || isSameValue(startingBoardMap[key], startingBoardMap[selectedKey]);
+            startingBoardMap[key].active = (key === selectedKey)
         })
         updateStartingBoardMap({...startingBoardMap})
     }, [colIndex, rowIndex, startingBoardMap])
