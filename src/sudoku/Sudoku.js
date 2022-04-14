@@ -431,6 +431,14 @@ class Sudoku extends Component {
         this.insert({colIndex: active.colIndex, rowIndex: active.rowIndex, value: e.currentTarget.value})
     }
 
+    insertByHint = () => {
+        const active = Object.values(this.state.startingBoardMap).find(item => item.active && !item.disabled);
+        if (!active){
+            return;
+        }
+        this.insert({colIndex: active.colIndex, rowIndex: active.rowIndex, value: active.value})
+    }
+
     remove = () => {
         const active = Object.values(this.state.startingBoardMap).find(item => item.active && !item.disabled);
         if (!active){
@@ -463,7 +471,7 @@ class Sudoku extends Component {
     };
 
     render() {
-        const {insert, remove, updateStartingBoardMap, isBreakRow, insertByButton, toggleMode, togglePausePlayGame, state} = this;
+        const {insert, remove, updateStartingBoardMap, isBreakRow, insertByButton, toggleMode, togglePausePlayGame, insertByHint, state} = this;
         const {startingBoardMap} = state;
         const {game} = this.props;
         const startingBoardList = Object.keys(startingBoardMap);
@@ -496,7 +504,7 @@ class Sudoku extends Component {
                         <span className="mode">{game.mode === Mode.notice ? 'On' : 'Off'}</span>
                         <span>Notes</span>
                     </NotiStyle>
-                    <NotiStyle >
+                    <NotiStyle onClick={insertByHint}>
                         <FaInfo />
                         <span>Hint</span>
                     </NotiStyle>
