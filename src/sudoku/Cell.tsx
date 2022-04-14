@@ -1,15 +1,15 @@
 import React, { FormEvent, FC, InputHTMLAttributes, useCallback } from "react";
 import styled, {css} from 'styled-components'
 import { useTheme } from "../theme/useTheme";
-import { Cell_Size, GameStatus, GameType, inSelectRowRange, inSelectColRange, inSelectBoxRange, isSameValue } from "../utils/game";
+import { Cell_Size, GameStatus, GameType, inSelectRowRange, inSelectColRange, inSelectBoxRange, isSameValue, CellType } from "../utils/game";
 
 interface CellStyleProps {
-    error: boolean
-    selected: boolean
+    error?: boolean
+    selected?: boolean
     disabled?: boolean
-    hovered: boolean
-    breakRow: boolean
-  }
+    hovered?: boolean
+    breakRow?: boolean
+}
 
 const CellStyle = styled.div<CellStyleProps>`
     ${({theme: {colors}, error, selected, hovered, breakRow}) => {
@@ -65,7 +65,7 @@ const InputStyle = styled.input<CellStyleProps>`
 `;
 
 interface CellProps extends InputHTMLAttributes<HTMLInputElement> {
-    selectedCell: any
+    selectedCell: CellType
     insert: any
     updateStartingBoardMap: any
     game: GameType
@@ -73,7 +73,7 @@ interface CellProps extends InputHTMLAttributes<HTMLInputElement> {
     breakRow: boolean
 }
 
-const Cell:FC<CellProps> = ({selectedCell, startingBoardMap, insert, updateStartingBoardMap, breakRow, game, ...res}) => {
+const Cell:FC<CellProps> = ({selectedCell, startingBoardMap, insert, updateStartingBoardMap, breakRow, game}) => {
     const {theme} = useTheme()
     const  {colIndex, rowIndex, inputValue, selected, error, disabled, hovered} = selectedCell;
 
@@ -102,10 +102,10 @@ const Cell:FC<CellProps> = ({selectedCell, startingBoardMap, insert, updateStart
 
     
     if (isDisabled()) {
-        return <CellStyle error={error} hovered={hovered} selected={selected} breakRow={breakRow} onClick={focusHandler} {...res} >{inputValue}</CellStyle>
+        return <CellStyle error={error} hovered={hovered} selected={selected} breakRow={breakRow} onClick={focusHandler}>{inputValue}</CellStyle>
     }
 
-    return <InputStyle error={error} hovered={hovered} selected={selected} disabled={false} breakRow={breakRow} type='number' step='1' onChange={onChange} onFocus={focusHandler} value={inputValue} {...res} />
+    return <InputStyle error={error} hovered={hovered} selected={selected} disabled={false} breakRow={breakRow} type='number' step='1' onChange={onChange} onFocus={focusHandler} value={inputValue}/>
 };
 
 export default Cell;

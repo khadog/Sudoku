@@ -61,13 +61,15 @@ const LevelName = {
 }
 
 export type CellType = {
-    value: string
-    inputValue: string
+    value: number
+    inputValue?: number | string
     colIndex: number
     rowIndex: number
-    selected: boolean
-    error: boolean
-    disabled: boolean
+    selected?: boolean
+    error?: boolean
+    disabled?: boolean
+    hovered?: boolean
+    active?: boolean
 }
 
 
