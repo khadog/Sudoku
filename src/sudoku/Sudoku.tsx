@@ -1,24 +1,36 @@
-import React, {Component, FormEvent} from "react";
+import {Component, FormEvent} from "react";
 import styled, {css} from 'styled-components'
 import Cell from "./Cell";
 import { isGameOver, GameStatus, isGameFinished, Mode, Cell_Size, Numbers, LevelName, Error_Count, GameType, CellType } from "../utils/game";
-import { safeToPlace, fillPuzzle, pokeHoles, SudokuBoardType, SudokuBoardMapType } from "../utils/sudoku";
-import {FaPen, FaTrash, FaUndoAlt, FaInfo} from 'react-icons/fa';
+import { fillPuzzle, pokeHoles, SudokuBoardType, SudokuBoardMapType , InsertEnum, InsertType} from "../utils/sudoku";
+import {FaPen, FaTrash, FaUndoAlt, FaInfo, FaPlay} from 'react-icons/fa';
 import Timer from "../components/Timer";
 
-type SudokuStyleProps  = {
-    active: boolean
-}
-
-const SudokuStyle = styled.section<SudokuStyleProps>`
-    ${({theme: {colors}, active}) => {
+const SudokuStyle = styled.section`
+    ${({theme: {colors}}) => {
         return css`
         display: flex;
         align-items: center;
         flex-wrap: wrap;
         color: ${colors.light};
         background-color: ${colors.dark};
-        filter: blur(${active ? '0px' : '5px'});
+        `;
+    }}
+`;
+
+const SudokuPauseStyle = styled.section`
+    ${({theme: {colors}}) => {
+        return css`
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        font-size: 5rem;
+        cursor: pointer;
+        color: ${colors.dark};
+        background-color: ${colors.light};
+        width: calc(9 * ${Cell_Size});
+        height: calc(9 * ${Cell_Size} + 8px);
         `;
     }}
 `;
@@ -150,9 +162,6 @@ type SudokuState = {
     startingBoardMap: SudokuBoardMapType,
 };
 
-
-
-
 // TODO: Typescript
 class Sudoku extends Component<SudokuProps, SudokuState> {
 
@@ -161,7 +170,12 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
     };
 
     componentDidMount() {
+        document.addEventListener('keydown', this.insertByKey)
         this.newGame()
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.insertByKey)
     }
 
     // Start new game
@@ -207,30 +221,50 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
         this.setState({startingBoardMap});
     }
 
-    insert = ({colIndex, rowIndex, value}: {colIndex: number, rowIndex: number, value: string | number}) => {
+    insert = (value: string | number, insertType: InsertType) => {
         const game: GameType = {...this.props.game};
         if(game.status === GameStatus.started){
             const startingBoardMap:SudokuBoardMapType = {...this.state.startingBoardMap};
-            const key = 'row' + rowIndex + '_col' + colIndex;
+            const listOfValues: CellType[] = Object.values(startingBoardMap);
+
+            const active: CellType | undefined = listOfValues.find(item => item.active && !item.disabled);
+            if (!active){
+                return;
+            }
 
             if(game.mode === Mode.notice){
-                console.log({startingBoardMap, value})
-            } else {
-                const error = value !== '' && +value !== startingBoardMap[key].value;
-
-                startingBoardMap[key].inputValue = value;
-                startingBoardMap[key].error = error;
-                
-                if (error) {
-                    const status = isGameOver(game) ? GameStatus.failed : game.status;
-                    this.props.setGame({...game, errors: ++game.errors, status}) 
-                } else {
+                if (insertType === InsertEnum.hint){
                     const finished = isGameFinished(startingBoardMap)
-                    if (finished) {
-                        this.props.setGame({...game, status: GameStatus.success})
+                    if (finished){
+                        game.status = GameStatus.success;
                     }
+                    active.inputValue = active.value;
+                    active.error = false;
                 }
+
+            } else {
+
+                const error = value !== '' && +value !== active.value;
+
+                if (insertType === InsertEnum.hint){
+                    const finished = isGameFinished(startingBoardMap)
+                    if (finished){
+                        game.status = GameStatus.success;
+                    }
+
+                    active.inputValue = active.value;
+                    active.error = false;
+                } else {
+                    const status = isGameOver(game) ? GameStatus.failed : game.status;
+
+                    active.inputValue = value;
+                    active.error = error;
+                    game.errors = game.errors + 1;
+                    game.status = status;
+                }
+       
             }
+            this.props.setGame({...game});
             this.setState({startingBoardMap})
         }
     }
@@ -244,21 +278,19 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
     };
 
     insertByButton = (e: FormEvent<HTMLButtonElement>) => {
-        const listOfValues: CellType[] = Object.values(this.state.startingBoardMap);
-        const active: CellType | undefined = listOfValues.find(item => item.active && !item.disabled);
-        if (!active){
-            return;
-        }
-        this.insert({colIndex: active.colIndex, rowIndex: active.rowIndex, value: e.currentTarget.value})
+        this.insert(e.currentTarget.value, InsertEnum.button)
     }
 
-    insertByHint = () => {
-        const listOfValues: CellType[] = Object.values(this.state.startingBoardMap);
-        const active: CellType | undefined = listOfValues.find(item => item.active && !item.disabled);
-        if (!active){
-            return;
+    insertByKey = (e: KeyboardEvent) => {
+        const reg = /^[1-9]+$/; // match only numbers
+        const key = e.code === 'Backspace' ? '' : e.key;
+        if(key === '' || key.match(reg)){
+            this.insert(key, InsertEnum.key)
         }
-        this.insert({colIndex: active.colIndex, rowIndex: active.rowIndex, value: active.value})
+    };
+
+    insertByHint = () => {
+        this.insert('', InsertEnum.hint)
     }
 
     remove = () => {
@@ -294,7 +326,7 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
     };
 
     render() {
-        const {insert, remove, updateStartingBoardMap, isBreakRow, insertByButton, toggleMode, togglePausePlayGame, insertByHint, state} = this;
+        const {remove, updateStartingBoardMap, isBreakRow, insertByButton, toggleMode, togglePausePlayGame, insertByHint, state} = this;
         const {startingBoardMap} = state;
         const {game} = this.props;
         const startingBoardList = Object.keys(startingBoardMap);
@@ -306,11 +338,16 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
                     <Timer status={game.status} togglePausePlayGame={togglePausePlayGame}/>
                     <NavItem>Errors: {game.errors} / {Error_Count}</NavItem>
                 </Header>
-                <SudokuStyle active={game.status !== GameStatus.paused}>
-                    {startingBoardList.map((key, index) => {
-                    return <Cell key={key} selectedCell={startingBoardMap[key]} startingBoardMap={startingBoardMap} breakRow={isBreakRow(index)} insert={insert} updateStartingBoardMap={updateStartingBoardMap} game={game} />
-                    })}
-                </SudokuStyle>
+                {game.status === GameStatus.paused ?
+                    <SudokuPauseStyle onClick={togglePausePlayGame}>
+                        <FaPlay />
+                    </SudokuPauseStyle> : 
+                    <SudokuStyle>
+                        {startingBoardList.map((key, index) => {
+                        return <Cell key={key} selectedCell={startingBoardMap[key]} startingBoardMap={startingBoardMap} breakRow={isBreakRow(index)} updateStartingBoardMap={updateStartingBoardMap} game={game} />
+                        })}
+                    </SudokuStyle>
+                }
             </Main>
             <Aside>
                 <Header>

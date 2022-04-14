@@ -1,9 +1,8 @@
-import { FC, useCallback, FormEvent } from "react";
-import styled, { css } from 'styled-components'
+import { FC, useCallback } from "react";
+import styled from 'styled-components'
 import Sudoku from "../../sudoku/Sudoku";
-import { Error_Count, LevelName, GameStatus, GameType, Mode } from "../../utils/game";
+import { GameStatus, GameType } from "../../utils/game";
 import GameStatusMessage from "./GameStatusMessage";
-import Timer from "../Timer";
 
 const GameProgressStyle = styled.div`
 

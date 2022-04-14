@@ -3,6 +3,14 @@ import { CellType } from "./game";
 export type SudokuBoardType = number[][];
 export type SudokuBoardMapType = {[key: string]: CellType};
 
+export type InsertType = InsertEnum
+
+enum InsertEnum {
+    key = 'KEY',
+    button = 'BUTTON',
+    hint = 'HINT'
+}
+
 const numArray:number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 let counter:number = 0;
 let pokeCounter:number = 0;
@@ -208,7 +216,7 @@ const emptyCellCoords = (startingBoard: SudokuBoardType) => {
 }
 
 export {
+    InsertEnum,
     pokeHoles,
-    fillPuzzle,
-    safeToPlace
+    fillPuzzle
 }

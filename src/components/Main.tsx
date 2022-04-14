@@ -1,4 +1,4 @@
-import React, {MouseEvent, FC, useState, useCallback} from 'react';
+import {MouseEvent, FC, useState, useCallback} from 'react';
 import styled from 'styled-components'
 import Button from './Button';
 import GameProgress from './Game/GameProgress';
