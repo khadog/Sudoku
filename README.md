@@ -5,6 +5,10 @@
 - A - :arrow_left:
 - D - :arrow_right:
 
+- Hint - Enter
+- Toggle Notes Mode - Space
+- Erase - Backspace
+
 ## Photo
 
 ![alt text](/public/Sudoku.png)
