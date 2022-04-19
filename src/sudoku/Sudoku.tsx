@@ -16,6 +16,7 @@ import {
   inSelectColRange,
   inSelectBoxRange,
   isSameValue,
+  defaultNotes,
 } from "../utils/game";
 import {
   fillPuzzle,
@@ -51,7 +52,7 @@ const SudokuPauseStyle = styled.section`
       cursor: pointer;
       color: ${colors.dark};
       background-color: ${colors.light};
-      width: calc(9 * ${Cell_Size});
+      width: calc(9 * ${Cell_Size} + 12px);
       height: calc(9 * ${Cell_Size} + 8px);
     `;
   }}
@@ -72,7 +73,7 @@ const Container = styled.section`
 const Main = styled.main`
   ${() => {
     return css`
-      width: calc(9 * ${Cell_Size});
+      width: calc(9 * ${Cell_Size} + 12px);
     `;
   }}
 `;
@@ -261,6 +262,15 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
     }
   };
 
+  updateNotes = (active: CellType, key: number) => {
+    if (active.notes) {
+      active.notes[key] = !active.notes[key];
+    } else {
+      active.notes = { ...defaultNotes };
+      active.notes[key] = !active.notes[key];
+    }
+  };
+
   insert = (value: string | number, insertType: InsertType) => {
     const game: GameType = { ...this.props.game };
     if (game.status === GameStatus.started) {
@@ -279,6 +289,8 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
       if (game.mode === Mode.notice) {
         if (insertType === InsertEnum.hint) {
           this.updateHint(active, game, startingBoardMap);
+        } else {
+          this.updateNotes(active, +value);
         }
       } else {
         const error = value !== "" && +value !== active.value;
@@ -345,7 +357,9 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
       const key = "row" + active.rowIndex + "_col" + active.colIndex;
 
       if (this.props.game.mode === Mode.notice) {
-        console.log({ startingBoardMap });
+        startingBoardMap[key].inputValue = "";
+        startingBoardMap[key].error = false;
+        startingBoardMap[key].notes = { ...defaultNotes };
       } else {
         startingBoardMap[key].inputValue = "";
         startingBoardMap[key].error = false;
@@ -407,6 +421,7 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
     const { game } = this.props;
     const startingBoardList = Object.keys(startingBoardMap);
 
+    console.log(startingBoardMap);
     return (
       <Container>
         <Main>

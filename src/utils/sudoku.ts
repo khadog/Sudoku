@@ -106,7 +106,7 @@ const pokeHoles = (startingBoard: SudokuBoardType, holes: number) => {
         removedVals[key] = {  // Store the current value at the coordinates
             rowIndex: randomRowIndex,
             colIndex: randomColIndex,
-            value: startingBoard[randomRowIndex][randomColIndex],
+            value: startingBoard[randomRowIndex][randomColIndex]
         }
 
         startingBoard[randomRowIndex][randomColIndex] = 0; // "poke a hole" in the board at the coords

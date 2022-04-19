@@ -60,9 +60,22 @@ const LevelName = {
     [Level.expert]: "Expert",
 }
 
+export const defaultNotes = {
+    1: false,
+    2: false,
+    3: false,
+    4: false,
+    5: false,
+    6: false,
+    7: false,
+    8: false,
+    9: false,
+  }
+
 export type CellType = {
     value: number
     inputValue?: number | string
+    notes?: {[key: number]: boolean}
     colIndex: number
     rowIndex: number
     selected?: boolean
@@ -71,7 +84,6 @@ export type CellType = {
     hovered?: boolean
     active?: boolean
 }
-
 
 export type GameType = {
     status: GameStatus

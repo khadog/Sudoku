@@ -1,6 +1,13 @@
 import { FC, useCallback, HTMLAttributes } from "react";
 import styled, { css } from "styled-components";
-import { Cell_Size, GameStatus, GameType, CellType } from "../utils/game";
+import {
+  Cell_Size,
+  GameStatus,
+  GameType,
+  CellType,
+  defaultNotes,
+} from "../utils/game";
+import Notes from "./Notes";
 
 interface CellStyleProps {
   error?: boolean;
@@ -35,7 +42,7 @@ const CellStyle = styled.div<CellStyleProps>`
       margin-bottom: ${breakRow ? "4px" : "inherit"};
 
       :nth-child(3n) {
-        border-right: 4px solid ${colors.dark};
+        margin-right: 4px;
       }
     `;
   }}
@@ -54,8 +61,16 @@ const Cell: FC<CellProps> = ({
   breakRow,
   game,
 }) => {
-  const { colIndex, rowIndex, inputValue, selected, error, disabled, hovered } =
-    selectedCell;
+  const {
+    colIndex,
+    rowIndex,
+    inputValue,
+    selected,
+    error,
+    disabled,
+    hovered,
+    notes,
+  } = selectedCell;
 
   const isDisabled = useCallback(() => {
     return (
@@ -93,7 +108,7 @@ const Cell: FC<CellProps> = ({
       breakRow={breakRow}
       onClick={getSelectedCellsHandler}
     >
-      {inputValue}
+      {inputValue ? inputValue : <Notes notes={notes || defaultNotes} />}
     </CellStyle>
   );
 };
