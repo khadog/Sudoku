@@ -60,7 +60,53 @@ const LevelName = {
     [Level.expert]: "Expert",
 }
 
-export const defaultNotes = {
+enum ControlsKeys {
+    ArrowUp = "ArrowUp",
+    ArrowLeft = "ArrowLeft",
+    ArrowRight = "ArrowRight",
+    ArrowDown = "ArrowDown",
+    w = "w",
+    a = "a",
+    d = "d",
+    s = "s"
+}
+
+const ControlKeys: ControlKeyType[] = [
+    {
+        code: ControlsKeys.ArrowUp,
+        value: -1
+    },
+    {
+        code: ControlsKeys.ArrowLeft,
+        value: -1
+    },
+    {
+        code: ControlsKeys.ArrowRight,
+        value: 1
+    },
+    {
+        code: ControlsKeys.ArrowDown,
+        value: 1
+    },
+    {
+        code: ControlsKeys.w,
+        value: -1
+    },
+    {
+        code: ControlsKeys.a,
+        value: -1
+    },
+    {
+        code: ControlsKeys.d,
+        value: 1
+    },
+    {
+        code: ControlsKeys.s,
+        value: 1
+    },
+  ];
+
+const DefaultNotes = {
     1: false,
     2: false,
     3: false,
@@ -71,6 +117,11 @@ export const defaultNotes = {
     8: false,
     9: false,
   }
+
+  export type ControlKeyType = {
+    code: string
+    value: number
+}
 
 export type CellType = {
     value: number
@@ -97,9 +148,12 @@ export {
     Cell_Size,
     LevelName,
     Numbers,
+    ControlKeys,
+    DefaultNotes,
     Mode,
     GameStatus,
     Level,
+    ControlsKeys,
     isGameOver,
     isGameFinished,
     inSelectBoxRange,

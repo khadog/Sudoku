@@ -5,7 +5,7 @@ import {
   GameStatus,
   GameType,
   CellType,
-  defaultNotes,
+  DefaultNotes,
 } from "../utils/game";
 import Notes from "./Notes";
 
@@ -108,7 +108,7 @@ const Cell: FC<CellProps> = ({
       breakRow={breakRow}
       onClick={getSelectedCellsHandler}
     >
-      {inputValue ? inputValue : <Notes notes={notes || defaultNotes} />}
+      {inputValue ? inputValue : <Notes notes={notes || DefaultNotes} />}
     </CellStyle>
   );
 };

@@ -16,7 +16,10 @@ import {
   inSelectColRange,
   inSelectBoxRange,
   isSameValue,
-  defaultNotes,
+  DefaultNotes,
+  ControlKeys,
+  ControlKeyType,
+  ControlsKeys,
 } from "../utils/game";
 import {
   fillPuzzle,
@@ -192,13 +195,68 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
   };
 
   componentDidMount() {
-    document.addEventListener("keydown", this.insertByKey);
+    document.addEventListener("keydown", this.keydownHandler);
     this.newGame();
   }
 
   componentWillUnmount() {
-    document.removeEventListener("keydown", this.insertByKey);
+    document.removeEventListener("keydown", this.keydownHandler);
   }
+
+  keydownHandler = (e: KeyboardEvent) => {
+    const key = e.code === "Backspace" ? "" : e.key;
+    const controllKey = ControlKeys.find((k) => k.code === key);
+    if (controllKey) {
+      this.controlHandler(controllKey);
+    } else {
+      this.insertByKey(key);
+    }
+  };
+
+  controlHandler = (controllKey: ControlKeyType) => {
+    const startingBoardMap = { ...this.state.startingBoardMap };
+    const listOfValues: CellType[] = Object.values(startingBoardMap);
+    const active: CellType | undefined = listOfValues.find(
+      (item) => item.active
+    );
+
+    if (!active) {
+      return;
+    }
+    let nextRow = active.rowIndex + controllKey.value;
+    let nextCol = active.colIndex + controllKey.value;
+
+    const nextPosition = {
+      rowIndex: active.rowIndex,
+      colIndex: active.colIndex,
+    };
+
+    if (
+      (controllKey.code === ControlsKeys.ArrowDown ||
+        controllKey.code === ControlsKeys.ArrowUp ||
+        controllKey.code === ControlsKeys.w ||
+        controllKey.code === ControlsKeys.s) &&
+      nextRow > -1 &&
+      nextRow < 9
+    ) {
+      nextPosition.rowIndex = nextRow;
+    } else if (
+      (controllKey.code === ControlsKeys.ArrowLeft ||
+        controllKey.code === ControlsKeys.ArrowRight ||
+        controllKey.code === ControlsKeys.a ||
+        controllKey.code === ControlsKeys.d) &&
+      nextCol > -1 &&
+      nextCol < 9
+    ) {
+      nextPosition.colIndex = nextCol;
+    }
+
+    this.getSelectedCells(
+      nextPosition.rowIndex,
+      nextPosition.colIndex,
+      startingBoardMap
+    );
+  };
 
   // Start new game
   newGame = () => {
@@ -266,7 +324,7 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
     if (active.notes) {
       active.notes[key] = !active.notes[key];
     } else {
-      active.notes = { ...defaultNotes };
+      active.notes = { ...DefaultNotes };
       active.notes[key] = !active.notes[key];
     }
   };
@@ -289,7 +347,7 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
       if (game.mode === Mode.notice) {
         if (insertType === InsertEnum.hint) {
           this.updateHint(active, game, startingBoardMap);
-        } else {
+        } else if (value !== "") {
           this.updateNotes(active, +value);
         }
       } else {
@@ -301,6 +359,9 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
         } else {
           let status: GameStatus = game.status;
 
+          active.inputValue = value;
+          active.error = error;
+
           if (error) {
             if (isGameOver(game)) {
               status = GameStatus.failed;
@@ -308,12 +369,9 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
             game.errors = game.errors + 1;
           } else {
             if (isGameFinished(startingBoardMap)) {
-              game.status = GameStatus.success;
+              status = GameStatus.success;
             }
           }
-
-          active.inputValue = value;
-          active.error = error;
           game.status = status;
         }
       }
@@ -330,9 +388,8 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
     this.insert(e.currentTarget.value, InsertEnum.button);
   };
 
-  insertByKey = (e: KeyboardEvent) => {
+  insertByKey = (key: string) => {
     const reg = /^[1-9]+$/; // match only numbers
-    const key = e.code === "Backspace" ? "" : e.key;
     if (key === "" || key.match(reg)) {
       this.insert(key, InsertEnum.key);
     }
@@ -359,7 +416,7 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
       if (this.props.game.mode === Mode.notice) {
         startingBoardMap[key].inputValue = "";
         startingBoardMap[key].error = false;
-        startingBoardMap[key].notes = { ...defaultNotes };
+        startingBoardMap[key].notes = { ...DefaultNotes };
       } else {
         startingBoardMap[key].inputValue = "";
         startingBoardMap[key].error = false;
@@ -421,7 +478,6 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
     const { game } = this.props;
     const startingBoardList = Object.keys(startingBoardMap);
 
-    console.log(startingBoardMap);
     return (
       <Container>
         <Main>

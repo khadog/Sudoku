@@ -33,8 +33,6 @@ interface NotesProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const Notes: FC<NotesProps> = ({ notes }) => {
-  console.log(notes);
-
   return (
     <NotesStyle>
       {Object.keys(notes).map((key) => (
