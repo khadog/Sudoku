@@ -41,7 +41,7 @@ enum GameStatus {
 
 enum Level {
     none = "0",
-    ease = "20",
+    ease = "1",
     normal = "30",
     hard = "45",
     expert = "60"
