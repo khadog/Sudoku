@@ -5,4 +5,6 @@
 - A - :arrow_left:
 - D - :arrow_right:
 
+## Photo
+
 ![alt text](/public/Sudoku.png)
