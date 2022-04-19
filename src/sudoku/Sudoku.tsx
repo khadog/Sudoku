@@ -204,8 +204,17 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
   }
 
   keydownHandler = (e: KeyboardEvent) => {
+    if (e.code === "Space") {
+      return this.toggleMode();
+    }
+
+    if (e.key === "Enter") {
+      return this.insertByHint();
+    }
+
     const key = e.code === "Backspace" ? "" : e.key;
     const controllKey = ControlKeys.find((k) => k.code === key);
+
     if (controllKey) {
       this.controlHandler(controllKey);
     } else {
@@ -347,12 +356,17 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
       if (game.mode === Mode.notice) {
         if (insertType === InsertEnum.hint) {
           this.updateHint(active, game, startingBoardMap);
-        } else if (value !== "") {
-          this.updateNotes(active, +value);
+        } else {
+          if (value === "") {
+            active.inputValue = "";
+            active.error = false;
+            active.notes = { ...DefaultNotes };
+          } else {
+            this.updateNotes(active, +value);
+          }
         }
       } else {
         const error = value !== "" && +value !== active.value;
-        console.log(error, value);
 
         if (insertType === InsertEnum.hint) {
           this.updateHint(active, game, startingBoardMap);
