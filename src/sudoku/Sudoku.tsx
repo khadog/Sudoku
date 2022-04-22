@@ -31,6 +31,7 @@ import {
 } from "../utils/sudoku";
 import { FaPen, FaTrash, FaUndoAlt, FaInfo, FaPlay } from "react-icons/fa";
 import Timer from "../components/Timer";
+import Controllers from "./Controllers";
 
 const SudokuStyle = styled.section`
   ${({ theme: { colors } }) => {
@@ -65,8 +66,9 @@ const Container = styled.section`
   ${({ theme: { colors } }) => {
     return css`
       display: flex;
-      justify-content: center;
-      align-items: center;
+      justify-content: space-around;
+      align-items: flex-end;
+      flex-wrap: wrap;
       margin: 1rem;
       color: ${colors.light};
     `;
@@ -82,15 +84,10 @@ const Main = styled.main`
 `;
 
 const Aside = styled.aside`
-  ${({ theme: { colors } }) => {
-    return css`
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-left: 5rem;
-      width: calc(6 * ${Cell_Size});
-    `;
-  }}
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  width: calc(6 * ${Cell_Size});
 `;
 
 const NumberStyle = styled.button`
@@ -157,16 +154,12 @@ const NotiStyle = styled.div`
 `;
 
 const Header = styled.header`
-  ${({ theme: { colors } }) => {
-    return css`
-      margin: 1rem auto;
-      padding: 0.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-    `;
-  }}
+  margin: 1rem auto;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 `;
 
 const NavItem = styled.span`
@@ -181,7 +174,7 @@ const NavItem = styled.span`
 
 type SudokuProps = {
   game: GameType;
-  setGame: any;
+  setGame: (game: GameType) => void;
 };
 
 type SudokuState = {
@@ -464,12 +457,19 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
 
   toggleMode = () => {
     const game: GameType = { ...this.props.game };
-    const mode: string = game.mode === Mode.notice ? Mode.write : Mode.notice;
+    const mode: Mode = game.mode === Mode.notice ? Mode.write : Mode.notice;
     this.props.setGame({ ...game, mode });
   };
 
   togglePausePlayGame = () => {
     const game: GameType = { ...this.props.game };
+    if (
+      game.status === GameStatus.failed ||
+      game.status === GameStatus.success
+    ) {
+      return;
+    }
+
     const status =
       game.status === GameStatus.started
         ? GameStatus.paused
@@ -552,6 +552,7 @@ class Sudoku extends Component<SudokuProps, SudokuState> {
               {item}
             </NumberStyle>
           ))}
+          <Controllers />
         </Aside>
       </Container>
     );

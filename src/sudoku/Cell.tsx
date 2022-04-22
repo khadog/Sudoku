@@ -7,6 +7,7 @@ import {
   CellType,
   DefaultNotes,
 } from "../utils/game";
+import { SudokuBoardMapType } from "../utils/sudoku";
 import Notes from "./Notes";
 
 interface CellStyleProps {
@@ -36,8 +37,7 @@ const CellStyle = styled.div<CellStyleProps>`
         ? colors.light_dark
         : colors.light};
       color: ${selected ? colors.light : colors.dark};
-      padding: ${({ theme }) => theme.fontSize.sm + theme.fontSize.sm};
-      font-size: 1.7rem;
+      font-size: 2rem;
       cursor: pointer;
       margin-bottom: ${breakRow ? "4px" : "inherit"};
 
@@ -50,7 +50,11 @@ const CellStyle = styled.div<CellStyleProps>`
 
 interface CellProps extends HTMLAttributes<HTMLDivElement> {
   selectedCell: CellType;
-  getSelectedCells: any;
+  getSelectedCells: (
+    rowIndex: number,
+    colIndex: number,
+    startingBoardMap?: SudokuBoardMapType
+  ) => void;
   game: GameType;
   breakRow: boolean;
 }
@@ -79,11 +83,11 @@ const Cell: FC<CellProps> = ({
       game.status === GameStatus.success ||
       game.status === GameStatus.paused
     );
-  }, [game, selectedCell]);
+  }, [game, disabled]);
 
   const getSelectedCellsHandler = useCallback(() => {
     getSelectedCells(rowIndex, colIndex);
-  }, [colIndex, rowIndex]);
+  }, [colIndex, rowIndex, getSelectedCells]);
 
   if (isDisabled()) {
     return (

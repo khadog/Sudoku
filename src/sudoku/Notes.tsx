@@ -1,31 +1,21 @@
 import { FC, HTMLAttributes } from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { Cell_Size } from "../utils/game";
 
 const NotesStyle = styled.div`
-  ${({ theme: { colors } }) => {
-    return css`
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      width: 100%;
-      height: 100%;
-      font-size: 1rem;
-      opacity: 0.8;
-    `;
-  }}
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 100%;
+  font-size: 1rem;
+  opacity: 0.8;
+  line-height: 1.5rem;
 `;
 
 const ChildNoteStyle = styled.div`
-  ${({ theme: { colors } }) => {
-    return css`
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: calc(${Cell_Size} / 4);
-      height: calc(${Cell_Size} / 4);
-    `;
-  }}
+  width: calc(${Cell_Size} / 3.1);
+  height: calc(${Cell_Size} / 3.1);
 `;
 
 interface NotesProps extends HTMLAttributes<HTMLDivElement> {
